@@ -43,7 +43,7 @@ end
 macro _set_string_if_present(c_usr, user, field, func)
     esc(quote
         if !isempty($user.$field)
-            @ccall($func($c_usr.ptr::Ptr{Nothing}, $user.$field::String)::Bool) || $_err($user, $field)
+            @ccall($func($c_usr.ptr::Ptr{Nothing}, $user.$field::Cstring)::Bool) || $_err($user, $field)
             nothing
         end
     end)
@@ -51,7 +51,7 @@ end
 
 function _make_c_user(user::User)
     c_usr = _LDUser(user.key)
-    @ccall LDUserSetAnonymous(c_usr.ptr::Ptr{Nothing}, user.anonymous::Bool)::Nothing
+    @ccall LDUserSetAnonymous(c_usr.ptr::Ptr{Nothing}, user.anonymous::Cchar)::Nothing
     @_set_string_if_present(c_usr, user, ip, LDUserSetIP)
     @_set_string_if_present(c_usr, user, country, LDUserSetCountry)
     @_set_string_if_present(c_usr, user, email, LDUserSetEmail)
