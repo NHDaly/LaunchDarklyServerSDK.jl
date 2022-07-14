@@ -9,7 +9,7 @@ Base.@kwdef struct User
     avatar::String = ""
     name::String = ""
     anonymous::Bool = false
-    custom::Dict{String,String} = Dict{String,String}()
+    #custom::Dict{String,String} = Dict{String,String}()
 end
 User(key::String; kwargs...) = User(;key=key, kwargs...)
 
@@ -33,6 +33,7 @@ function _free_c_user!(c_usr::_LDUser)
         @ccall LDUserFree(c_usr.ptr::Ptr{Nothing})::Nothing
         c_usr.ptr = C_NULL
     end
+    return nothing
 end
 
 function _err(user::User, field)
