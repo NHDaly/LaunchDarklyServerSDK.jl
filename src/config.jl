@@ -13,8 +13,8 @@ end
 function free!(cfg::Config)
     if cfg.ptr != C_NULL
         #Core.println("FREEING: $(cfg.ptr)")
-        # TODO: This is causing segfaults. Better to leak, for now... :'(
-        #@ccall LDConfigFree(cfg.ptr::Ptr{Nothing})::Nothing
+        # NOTE: I was previously seeing segfaults here..... Let's pay attention to it...
+        @ccall LDConfigFree(cfg.ptr::Ptr{Nothing})::Nothing
         cfg.ptr = C_NULL
     end
     return nothing
@@ -40,9 +40,8 @@ end
 function close!(client::Client)
     if client.ptr != C_NULL
         #Core.println("CLOSING: $(client.ptr)")
-        # TODO: This is causing segfaults. Better to leak, for now... :'(
-        #success = @ccall LDClientClose(client.ptr::Ptr{Nothing})::Bool
-        success = true
+        # NOTE: I was previously seeing segfaults here..... Let's pay attention to it...
+        success = @ccall LDClientClose(client.ptr::Ptr{Nothing})::Bool
         if !success
             Core.println(stderr, "Failed to close LDClient: $(client)")
             return
